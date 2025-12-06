@@ -1,0 +1,141 @@
+1. Kenapa MVVM itu penting? File mana yang jadi Model, View, dan ViewModel?
+
+MVVM penting karena membantu memisahkan code berdasarkan tanggung jawabnya. Dengan pemisahan ini:
+
+Project jadi lebih rapi
+
+Lebih mudah di-maintain
+
+Bisa diuji (testing) dengan lebih gampang
+
+UI tidak langsung berhubungan dengan data, jadi tidak mudah error saat app berkembang
+
+Pembagian file:
+
+✅ Model
+
+File yang berhubungan dengan data:
+
+Movie.kt
+
+PopularMoviesResponse.kt
+
+MovieDao.kt
+
+MovieDatabase.kt
+
+MovieRepository.kt
+
+Model ini isinya struktur data + cara mengambil/menyimpan data (API/DB).
+
+✅ View
+
+Bagian yang tampil ke pengguna (UI):
+
+activity_main.xml
+
+view_movie_item.xml
+
+MainActivity.kt
+
+DetailsActivity.kt
+
+View hanya menampilkan data, logika berat tidak ada di sini.
+
+✅ ViewModel
+
+Bagian yang mengatur data untuk disajikan ke View:
+
+MovieViewModel.kt
+
+MovieViewModelFactory.kt
+
+ViewModel ambil data dari repository, lalu View hanya observe data tersebut.
+
+
+2. Kenapa Data Binding lebih efisien dibanding cara biasa?
+
+Data Binding itu lebih efisien karena:
+
+Tidak perlu lagi pakai findViewById() berkali-kali
+
+Proses update UI jadi otomatis mengikuti perubahan data (misalnya LiveData)
+
+Mengurangi boilerplate code, jadi file lebih bersih
+
+Mengurangi risiko typo saat akses komponen UI
+
+Binding langsung ke ViewModel bikin alur data lebih jelas
+
+Intinya, Data Binding bikin UI lebih reaktif dan tidak perlu update manual.
+
+
+3. Di Part 2 kamu pakai Singleton Pattern, kenapa itu penting?
+
+Singleton penting karena:
+
+Kita hanya butuh satu instance untuk objek tertentu, misalnya:
+
+MovieDatabase
+
+MovieRepository
+
+Retrofit
+
+Menghemat memori
+
+Menghindari duplikasi object yang bisa bikin crash
+
+Memastikan semua bagian aplikasi memakai sumber data yang sama
+
+Dengan Singleton, database dan repository tidak dibuat berkali-kali.
+
+
+4. Di Part 2 & 3 kamu pakai Repository Pattern, kenapa itu penting?
+
+Repository Pattern itu penting karena:
+
+Memisahkan logika data (API dan DB) dari ViewModel
+
+ViewModel tidak perlu tahu data berasal dari mana (API atau DB)
+
+Kalau nanti pindah sumber data (misal ganti API atau tambah cache), ViewModel tidak perlu diubah
+
+Membuat arsitektur lebih rapih dan clean
+
+Lebih mudah di-test karena repository bisa di-mock
+
+Intinya, repository jadi jembatan antara data source dan ViewModel.
+
+
+5. Di Part 3 kamu pakai WorkManager. Ada cara lain untuk refresh database selain Worker?
+
+Ada, beberapa alternatifnya:
+
+a. Manual Refresh dalam UI
+
+Misalnya user menarik halaman untuk refresh (pull-to-refresh).
+
+b. Foreground Service
+
+Dipakai jika ingin update data saat app aktif dalam jangka lama.
+
+c. AlarmManager
+
+Menjadwalkan task periodik, tapi tidak direkomendasikan untuk background yang stabil.
+
+d. Firebase Cloud Messaging
+
+Server bisa kirim notifikasi ke app, dan app kemudian ambil data baru.
+
+e. App Startup / onResume
+
+Data bisa direfresh setiap kali user membuka aplikasi.
+
+Tapi WorkManager adalah cara paling stabil karena jalan bahkan saat:
+
+app ditutup
+
+device restart
+
+dan tetap mengikuti kondisi (misal butuh internet)x
