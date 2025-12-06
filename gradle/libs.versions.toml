@@ -18,6 +18,8 @@ constraintlayout = "2.2.1"
 materialVersion = "1.7.0"
 recyclerview = "1.4.0"
 retrofit = "3.0.0"
+work = "2.9.0"
+
 
 [libraries]
 androidx-appcompat-v151 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
