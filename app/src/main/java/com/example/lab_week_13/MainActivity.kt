@@ -2,15 +2,15 @@ package com.example.lab_week_13
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.lab_week_13.databinding.ActivityMainBinding
 import com.example.lab_week_13.model.Movie
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
 
     private val movieAdapter by lazy {
         MovieAdapter(object : MovieAdapter.MovieClickListener {
@@ -20,28 +20,21 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private val movieViewModel: MovieViewModel by viewModels {
+        MovieViewModelFactory((application as MovieApplication).movieRepository)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val binding: ActivityMainBinding =
-            DataBindingUtil.setContentView(this, R.layout.activity_main)
-
-        val movieRepository = (application as MovieApplication).movieRepository
-
-        val movieViewModel = ViewModelProvider(
-            this,
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return MovieViewModel(movieRepository) as T
-                }
-            }
-        )[MovieViewModel::class.java]
-
-        binding.viewModel = movieViewModel
-        binding.lifecycleOwner = this
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         binding.movieList.layoutManager = GridLayoutManager(this, 2)
         binding.movieList.adapter = movieAdapter
+
+        movieViewModel.popularMovies.observe(this) { movies ->
+            movieAdapter.submitList(movies)
+        }
     }
 
     private fun openMovieDetails(movie: Movie) {
